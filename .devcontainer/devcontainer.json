@@ -1,21 +1,35 @@
-// https://code.visualstudio.com/docs/devcontainers/containers
-// https://containers.dev/implementors/json_reference/
 {
-  "name": "nitro-devcontainer",
-  "forwardPorts": [3000],
-  "image": "node:lts",
-  "features": {},
+  "name": "Nitro Dev",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+  "features": {
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "22"
+    },
+    "ghcr.io/devcontainers/features/pnpm:1": {
+      "version": "10.17.1"
+    },
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+  "postCreateCommand": "pnpm install",
+  "mounts": [
+    "type=cache,target=/home/vscode/.pnpm-store"
+  ],
+  "forwardPorts": [3000, 5173],
+  "portsAttributes": {
+    "3000": { "label": "Nitro / Playground" },
+    "5173": { "label": "Vite Dev Server" }
+  },
   "customizations": {
     "vscode": {
-      "settings": {},
+      "settings": {
+        "typescript.tsdk": "node_modules/typescript/lib",
+        "eslint.useFlatConfig": true
+      },
       "extensions": [
-        "ms-azuretools.vscode-docker",
         "dbaeumer.vscode-eslint",
-        "github.vscode-github-actions",
         "esbenp.prettier-vscode"
       ]
     }
   },
-  "postStartCommand": "npm i -fg corepack && corepack enable && pnpm install && pnpm build --stub",
-  "mounts": ["type=volume,target=${containerWorkspaceFolder}/node_modules"]
+  "remoteUser": "vscode"
 }
